@@ -68,6 +68,15 @@ export default async function Home() {
           >
             Enter the Grid
           </Link>
+          <Link
+            href="/gpt-connectivity-test"
+            className={cn(
+              buttonVariants({ size: "lg", variant: "outline" }),
+              "cta-button-secondary",
+            )}
+          >
+            GPT connectivity test
+          </Link>
           {!user && (
             <Link
               href="/auth/login"
