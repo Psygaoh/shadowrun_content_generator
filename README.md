@@ -49,6 +49,13 @@ The above will also clone the Starter kit to your GitHub, you can clone that loc
 
 If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
 
+## Configure production environment variables
+
+- Copy `.env.production.example` to `.env.production` if you want to run `next build && next start` locally with your production Supabase project values.
+- On Vercel, add the same keys (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY`) under **Project Settings → Environment Variables**. Use the "Production" scope so they are available at build and runtime.
+- If you deploy elsewhere, create environment variables with the same names before running `next build`; Next.js will inline them during the build step.
+- Verify your setup locally by running `npm run build` followed by `npm run start`; the app should connect using the production credentials you supplied.
+
 ## Clone and run locally
 
 1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
