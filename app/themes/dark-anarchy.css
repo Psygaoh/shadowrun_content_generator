@@ -1,0 +1,86 @@
+.theme-darkAnarchy {
+  color-scheme: dark;
+  --background: 222 45% 2.3%;
+  --foreground: 48 90% 88%;
+  --card: 222 42% 4.5%;
+  --card-foreground: 48 88% 90%;
+  --popover: 222 42% 4.5%;
+  --popover-foreground: 48 90% 90%;
+  --primary: 48 100% 52%;
+  --primary-foreground: 235 85% 8%;
+  --secondary: 32 94% 46%;
+  --secondary-foreground: 30 100% 92%;
+  --muted: 222 25% 12%;
+  --muted-foreground: 48 40% 70%;
+  --accent: 218 30% 16%;
+  --accent-foreground: 48 85% 88%;
+  --destructive: 5 83% 52%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 220 32% 14%;
+  --input: 220 32% 16%;
+  --ring: 48 100% 52%;
+  --chart-1: 48 100% 52%;
+  --chart-2: 35 94% 45%;
+  --chart-3: 210 82% 52%;
+  --chart-4: 0 65% 45%;
+  --chart-5: 140 64% 45%;
+  --radius: 0.5rem;
+
+  --primary-rgb: 250 204 21;
+  --brand-weak: rgba(250, 204, 21, 0.75);
+  --brand-strong: rgba(250, 204, 21, 1);
+  --label-color: rgba(250, 204, 21, 0.78);
+
+  --cta-primary-start: #facc15;
+  --cta-primary-mid: #f59e0b;
+  --cta-primary-end: #fef08a;
+  --cta-primary-hover-start: #fde047;
+  --cta-primary-hover-mid: #f59e0b;
+  --cta-primary-hover-end: #fef9c3;
+  --cta-primary-shadow: rgba(250, 204, 21, 0.45);
+  --cta-primary-text: #1a1002;
+  --cta-secondary-border: rgba(250, 204, 21, 0.6);
+  --cta-secondary-hover-border: rgba(253, 224, 71, 0.85);
+  --cta-secondary-bg: rgba(14, 11, 4, 0.65);
+  --cta-secondary-hover-bg: rgba(250, 204, 21, 0.12);
+  --cta-secondary-text: rgba(254, 240, 138, 0.9);
+  --cta-secondary-hover-text: #fefce8;
+
+  --feature-card-border: rgba(250, 204, 21, 0.35);
+  --feature-card-bg: rgba(10, 9, 4, 0.82);
+  --feature-card-shadow: rgba(250, 204, 21, 0.45);
+  --feature-card-overlay: linear-gradient(
+    135deg,
+    rgba(250, 204, 21, 0.2),
+    transparent,
+    rgba(249, 115, 22, 0.12)
+  );
+
+  --footer-link: rgba(250, 204, 21, 0.78);
+  --footer-link-hover: rgba(253, 224, 71, 1);
+  --header-landing-bg: rgba(8, 6, 3, 0.55);
+  --header-landing-border: rgba(250, 204, 21, 0.18);
+  --header-app-bg: rgba(8, 6, 3, 0.72);
+  --header-app-border: rgba(250, 204, 21, 0.2);
+  --header-blur: 45px;
+  --footer-landing-bg: rgba(8, 6, 3, 0.6);
+  --footer-landing-border: rgba(250, 204, 21, 0.18);
+  --footer-app-bg: rgba(6, 5, 2, 0.64);
+  --footer-app-border: rgba(250, 204, 21, 0.22);
+
+  --glow-primary-rgb: 250 204 21;
+  --glow-primary-alpha: 0.38;
+  --glow-primary-blur: 150px;
+  --glow-secondary-rgb: 249 115 22;
+  --glow-secondary-alpha: 0.22;
+  --glow-secondary-blur: 170px;
+  --grid-primary-rgb: 253 224 71;
+  --grid-primary-alpha: 0.12;
+  --grid-secondary-rgb: 234 179 8;
+  --grid-secondary-alpha: 0.16;
+  --backdrop-top: #0a0703;
+  --backdrop-middle: #130f05;
+  --backdrop-bottom: #040301;
+  --backdrop-bottom-rgb: 4 3 1;
+  --backdrop-bottom-alpha: 0.92;
+}
