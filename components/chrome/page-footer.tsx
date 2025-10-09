@@ -10,13 +10,13 @@ const footerVariants: Record<
   { container: string; content: ReactNode }
 > = {
   landing: {
-    container: "px-6 py-8 md:px-10",
+    container: "landing-footer px-6 py-8 md:px-10",
     content: (
       <p>
         Built for game masters who want to keep the shadows moving.{" "}
         <Link
           href="/auth/sign-up"
-          className="text-cyan-300 hover:text-cyan-100"
+          className="footer-link"
         >
           Create an account
         </Link>{" "}
@@ -25,7 +25,7 @@ const footerVariants: Record<
     ),
   },
   app: {
-    container: "border-t border-white/5 px-6 py-6 md:px-10",
+    container: "app-footer px-6 py-6 md:px-10",
     content: <p>Secure area - only those invited to the shadows can proceed.</p>,
   },
 };
@@ -46,7 +46,7 @@ export function PageFooter({
   return (
     <footer
       className={cn(
-        "flex justify-center text-xs text-slate-500",
+        "flex justify-center text-xs text-muted-foreground",
         variantStyles.container,
         className,
       )}

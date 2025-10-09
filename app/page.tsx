@@ -4,6 +4,7 @@ import { AuthButton } from "@/components/auth-button";
 import { PageHeader } from "@/components/chrome/page-header";
 import { PageFooter } from "@/components/chrome/page-footer";
 import { NeonBackdrop } from "@/components/chrome/neon-backdrop";
+import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
@@ -33,17 +34,24 @@ export default async function Home() {
 
   return (
     <NeonBackdrop>
-      <PageHeader rightSlot={<AuthButton />} />
+      <PageHeader
+        rightSlot={
+          <div className="flex items-center gap-3">
+            <ThemeSwitcher />
+            <AuthButton />
+          </div>
+        }
+      />
 
       <main className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center md:px-12">
         <div className="mx-auto max-w-3xl space-y-6">
-          <span className="text-xs font-medium uppercase tracking-[0.4em] text-cyan-400/80">
+          <span className="callout-label text-xs font-medium uppercase tracking-[0.4em]">
             Shadowrun GM Toolkit
           </span>
-          <h1 className="text-4xl font-semibold leading-tight text-slate-50 md:text-6xl md:leading-tight">
+          <h1 className="text-4xl font-semibold leading-tight text-foreground md:text-6xl md:leading-tight">
             Shadowrun Content Creator Assistant
           </h1>
-          <p className="text-base text-slate-300/80 md:text-lg">
+          <p className="text-base text-muted-foreground md:text-lg">
             Streamline preparation and improvisation. Spin up NPCs, locations,
             and ambient beats that match your campaign context without breaking
             the pacing of the run.
@@ -55,7 +63,7 @@ export default async function Home() {
             href="/home"
             className={cn(
               buttonVariants({ size: "lg" }),
-              "bg-gradient-to-r from-cyan-400 via-cyan-500 to-purple-500 text-slate-950 shadow-[0_0_30px_rgba(34,211,238,0.35)] hover:from-cyan-300 hover:via-cyan-400 hover:to-purple-400",
+              "cta-button-primary",
             )}
           >
             Enter the Grid
@@ -65,7 +73,7 @@ export default async function Home() {
               href="/auth/login"
               className={cn(
                 buttonVariants({ size: "lg", variant: "outline" }),
-                "border-cyan-500/60 bg-white/5 text-cyan-200 hover:border-cyan-300 hover:text-cyan-100",
+                "cta-button-secondary",
               )}
             >
               Log in with Supabase
@@ -77,14 +85,13 @@ export default async function Home() {
           {featureHighlights.map((feature) => (
             <div
               key={feature.title}
-              className="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-slate-900/60 p-6 text-left shadow-[0_20px_60px_-30px_rgba(34,211,238,0.45)] backdrop-blur"
+              className="feature-card relative overflow-hidden rounded-xl p-6 text-left backdrop-blur"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-purple-500/10" />
               <div className="relative space-y-3">
-                <h3 className="text-lg font-semibold text-slate-50">
+                <h3 className="text-lg font-semibold text-foreground">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-slate-300/80">
+                <p className="text-sm text-muted-foreground">
                   {feature.description}
                 </p>
               </div>

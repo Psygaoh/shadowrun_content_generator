@@ -27,11 +27,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.className} antialiased bg-slate-950 text-slate-100`}>
+      <body className={`${geistSans.className} antialiased`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="sr4"
+          themes={["sr4", "sr5", "sr6", "darkAnarchy", "matrix", "lightAnarchy"]}
+          value={{
+            sr4: "theme-sr4",
+            sr5: "theme-sr5",
+            sr6: "theme-sr6",
+            darkAnarchy: "theme-darkAnarchy",
+            matrix: "theme-matrix",
+            lightAnarchy: "theme-lightAnarchy",
+          }}
+          enableSystem={false}
           disableTransitionOnChange
         >
           {children}

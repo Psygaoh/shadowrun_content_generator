@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { LogoutButton } from "@/components/logout-button";
 import { PageHeader } from "@/components/chrome/page-header";
 import { PageFooter } from "@/components/chrome/page-footer";
+import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { NeonBackdrop } from "@/components/chrome/neon-backdrop";
 import { createClient } from "@/lib/supabase/server";
 
@@ -28,8 +29,9 @@ export default async function AppLayout({
         variant="app"
         brandHref="/home"
         rightSlot={
-          <div className="flex items-center gap-4 text-xs text-slate-300/80">
-            <span className="hidden sm:inline text-slate-400">
+          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <ThemeSwitcher compact />
+            <span className="hidden text-muted-foreground/80 sm:inline">
               {user.email}
             </span>
             <LogoutButton />

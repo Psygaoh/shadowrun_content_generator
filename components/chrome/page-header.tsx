@@ -10,12 +10,12 @@ const headerVariants: Record<
   { container: string; brand: string }
 > = {
   landing: {
-    container: "px-6 py-6 md:px-10",
+    container: "landing-header px-6 py-6 md:px-10",
     brand: "tracking-[0.6em]",
   },
   app: {
     container:
-      "border-b border-cyan-500/20 bg-slate-950/80 px-6 py-5 backdrop-blur md:px-10",
+      "app-header px-6 py-5 md:px-10",
     brand: "tracking-[0.5em]",
   },
 };
@@ -50,7 +50,7 @@ export function PageHeader({
       <Link
         href={brandHref}
         className={cn(
-          "text-xs font-semibold uppercase text-cyan-200/80 hover:text-cyan-200",
+          "theme-brand text-xs font-semibold uppercase transition-colors",
           variantStyles.brand,
           brandClassName,
         )}
