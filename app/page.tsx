@@ -1,51 +1,106 @@
-import { DeployButton } from "@/components/deploy-button";
-import { EnvVarWarning } from "@/components/env-var-warning";
-import { AuthButton } from "@/components/auth-button";
-import { Hero } from "@/components/hero";
-import { ThemeSwitcher } from "@/components/theme-switcher";
-import { ConnectSupabaseSteps } from "@/components/tutorial/connect-supabase-steps";
-import { SignUpUserSteps } from "@/components/tutorial/sign-up-user-steps";
-import { hasEnvVars } from "@/lib/utils";
 import Link from "next/link";
 
-export default function Home() {
+import { AuthButton } from "@/components/auth-button";
+import { PageHeader } from "@/components/chrome/page-header";
+import { PageFooter } from "@/components/chrome/page-footer";
+import { NeonBackdrop } from "@/components/chrome/neon-backdrop";
+import { ThemeSwitcher } from "@/components/theme/theme-switcher";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/server";
+
+const featureHighlights = [
+  {
+    title: "Instant NPC briefs",
+    description:
+      "Generate archetypes, quirks, and hooks in moments so your runners never see the seams.",
+  },
+  {
+    title: "Mission-ready locales",
+    description:
+      "Paint the scene with sensory hits, security notes, and complications tailored to each run.",
+  },
+  {
+    title: "Atmospheric prompts",
+    description:
+      "Drop-in ambient snippets to set the tone for smoke-filled bars, corporate vaults, or astral storms.",
+  },
+];
+
+export default async function Home() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.getUser();
+  const user = error ? null : data?.user ?? null;
+
   return (
-    <main className="min-h-screen flex flex-col items-center">
-      <div className="flex-1 w-full flex flex-col gap-20 items-center">
-        <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-          <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
-            <div className="flex gap-5 items-center font-semibold">
-              <Link href={"/"}>Next.js Supabase Starter</Link>
-              <div className="flex items-center gap-2">
-                <DeployButton />
-              </div>
-            </div>
-            {!hasEnvVars ? <EnvVarWarning /> : <AuthButton />}
+    <NeonBackdrop>
+      <PageHeader
+        rightSlot={
+          <div className="flex items-center gap-3">
+            <ThemeSwitcher />
+            <AuthButton />
           </div>
-        </nav>
-        <div className="flex-1 flex flex-col gap-20 max-w-5xl p-5">
-          <Hero />
-          <main className="flex-1 flex flex-col gap-6 px-4">
-            <h2 className="font-medium text-xl mb-4">Next steps</h2>
-            {hasEnvVars ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-          </main>
+        }
+      />
+
+      <main className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center md:px-12">
+        <div className="mx-auto max-w-3xl space-y-6">
+          <span className="callout-label text-xs font-medium uppercase tracking-[0.4em]">
+            Shadowrun GM Toolkit
+          </span>
+          <h1 className="text-4xl font-semibold leading-tight text-foreground md:text-6xl md:leading-tight">
+            Shadowrun Content Creator Assistant
+          </h1>
+          <p className="text-base text-muted-foreground md:text-lg">
+            Streamline preparation and improvisation. Spin up NPCs, locations,
+            and ambient beats that match your campaign context without breaking
+            the pacing of the run.
+          </p>
         </div>
 
-        <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
-          <p>
-            Powered by{" "}
-            <a
-              href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-              target="_blank"
-              className="font-bold hover:underline"
-              rel="noreferrer"
+        <div className="mt-10 flex flex-wrap justify-center gap-4">
+          <Link
+            href="/home"
+            className={cn(
+              buttonVariants({ size: "lg" }),
+              "cta-button-primary",
+            )}
+          >
+            Enter the Grid
+          </Link>
+          {!user && (
+            <Link
+              href="/auth/login"
+              className={cn(
+                buttonVariants({ size: "lg", variant: "outline" }),
+                "cta-button-secondary",
+              )}
             >
-              Supabase
-            </a>
-          </p>
-          <ThemeSwitcher />
-        </footer>
-      </div>
-    </main>
+              Log in with Supabase
+            </Link>
+          )}
+        </div>
+
+        <div className="mt-20 grid w-full max-w-4xl gap-6 md:grid-cols-3">
+          {featureHighlights.map((feature) => (
+            <div
+              key={feature.title}
+              className="feature-card relative overflow-hidden rounded-xl p-6 text-left backdrop-blur"
+            >
+              <div className="relative space-y-3">
+                <h3 className="text-lg font-semibold text-foreground">
+                  {feature.title}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {feature.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
+
+      <PageFooter />
+    </NeonBackdrop>
   );
 }
