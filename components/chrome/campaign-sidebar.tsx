@@ -4,12 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
-import type { CampaignSummary } from "@/lib/campaigns";
+import type { Campaign } from "@/lib/campaigns";
 import { CreateCampaignDialog } from "@/components/campaigns/create-campaign-dialog";
 import { ACTIVE_CAMPAIGN_STORAGE_KEY } from "@/components/campaigns/campaign-notes-drawer";
 
 type CampaignSidebarProps = {
-  campaigns: CampaignSummary[];
+  campaigns: Campaign[];
 };
 
 export function CampaignSidebar({ campaigns }: CampaignSidebarProps) {
@@ -64,9 +64,9 @@ export function CampaignSidebar({ campaigns }: CampaignSidebarProps) {
                 <span className="block truncate font-medium">
                   {campaign.name}
                 </span>
-                {campaign.prompt_context ? (
+                {campaign.promptContext ? (
                   <span className="mt-1 block truncate text-xs text-muted-foreground">
-                    {campaign.prompt_context}
+                    {campaign.promptContext}
                   </span>
                 ) : null}
               </Link>

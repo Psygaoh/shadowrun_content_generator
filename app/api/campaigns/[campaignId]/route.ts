@@ -5,15 +5,17 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 type RouteContext = {
-  params: {
+  params: Promise<{
     campaignId: string;
-  };
+  }>;
 };
 
 export async function GET(
   _request: Request,
-  { params }: RouteContext,
+  context: RouteContext,
 ) {
+  const { campaignId } = await context.params;
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -31,7 +33,7 @@ export async function GET(
     .select(
       "id, name, prompt_context, description, created_at, updated_at",
     )
-    .eq("id", params.campaignId)
+    .eq("id", campaignId)
     .maybeSingle();
 
   if (error) {
@@ -51,8 +53,10 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: RouteContext,
+  context: RouteContext,
 ) {
+  const { campaignId } = await context.params;
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -100,7 +104,7 @@ export async function PATCH(
   const { status, error } = await supabase
     .from("campaigns")
     .update(updates)
-    .eq("id", params.campaignId)
+    .eq("id", campaignId)
     .eq("gamemaster_id", user.id);
 
   if (error) {
@@ -111,5 +115,12 @@ export async function PATCH(
     );
   }
 
-  return NextResponse.json({ success: true }, { status: status ?? 200 });
+  const responseStatus =
+    status === 204
+      ? 200
+      : status && status >= 200 && status < 600
+        ? status
+        : 200;
+
+  return NextResponse.json({ success: true }, { status: responseStatus });
 }

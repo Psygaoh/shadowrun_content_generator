@@ -4,13 +4,13 @@ import { useEffect, useMemo, useState } from "react";
 import { XIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-import type { CampaignSummary } from "@/lib/campaigns";
+import type { Campaign } from "@/lib/campaigns";
 import { Button } from "@/components/ui/button";
 
 export const ACTIVE_CAMPAIGN_STORAGE_KEY = "shadowrun.activeCampaignId";
 
 type CampaignNotesDrawerProps = {
-  campaigns: CampaignSummary[];
+  campaigns: Campaign[];
 };
 
 function extractCampaignId(pathname: string): string | null {

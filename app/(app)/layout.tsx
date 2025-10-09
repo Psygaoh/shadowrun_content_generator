@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 import { LogoutButton } from "@/components/logout-button";
 import { AppNavigation } from "@/components/chrome/app-navigation";
 import { CampaignSidebar } from "@/components/chrome/campaign-sidebar";
-import { listCampaigns, type CampaignSummary } from "@/lib/campaigns";
+import { listCampaigns, type Campaign } from "@/lib/campaigns";
 import { CampaignNotesDrawer } from "@/components/campaigns/campaign-notes-drawer";
 
 export default async function AppLayout({
@@ -27,7 +27,7 @@ export default async function AppLayout({
     redirect("/auth/login");
   }
 
-  let campaigns: CampaignSummary[] = [];
+  let campaigns: Campaign[] = [];
 
   try {
     campaigns = await listCampaigns(supabase);

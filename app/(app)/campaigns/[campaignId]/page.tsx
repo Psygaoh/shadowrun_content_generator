@@ -5,21 +5,22 @@ import { PromptContextEditor } from "@/components/campaigns/prompt-context-edito
 import { majorMono } from "@/lib/fonts";
 
 type CampaignPageProps = {
-  params: {
+  params: Promise<{
     campaignId: string;
-  };
+  }>;
 };
 
 export default async function CampaignDetailPage({
   params,
 }: CampaignPageProps) {
-  const campaign = await getCampaignById(params.campaignId);
+  const { campaignId } = await params;
+  const campaign = await getCampaignById(campaignId);
 
   if (!campaign) {
     notFound();
   }
 
-  const promptContext = campaign.prompt_context ?? "";
+  const promptContext = campaign.promptContext ?? "";
 
   return (
     <section className="space-y-12">
