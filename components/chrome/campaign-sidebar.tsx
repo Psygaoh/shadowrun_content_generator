@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import type { CampaignSummary } from "@/lib/campaigns";
+import { CreateCampaignDialog } from "@/components/campaigns/create-campaign-dialog";
 
 type CampaignSidebarProps = {
   campaigns: CampaignSummary[];
@@ -13,17 +14,23 @@ type CampaignSidebarProps = {
 export function CampaignSidebar({ campaigns }: CampaignSidebarProps) {
   const pathname = usePathname();
 
-  if (pathname === "/home") {
+  const isHomePage = pathname === "/home";
+
+  if (isHomePage) {
     return null;
   }
 
   return (
-    <aside className="campaign-sidebar w-full shrink-0 border-b border-border/70 bg-background/40 p-4 backdrop-blur lg:basis-[9%] lg:min-w-[7.25rem] lg:max-w-[10%] lg:border-b-0 lg:border-r">
-      <div className="mb-4 flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-          Campaigns
-        </span>
+    <aside className="campaign-sidebar w-full shrink-0 border-b border-border/70 bg-background/40 p-4 backdrop-blur lg:basis-[14%] lg:min-w-[9rem] lg:max-w-[16%] lg:border-b-0 lg:border-r">
+      <div className="mb-4 space-y-3">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+            Campaigns
+          </span>
+          <CreateCampaignDialog />
+        </div>
       </div>
+
       <nav className="flex flex-col gap-1 lg:max-h-[70vh] lg:overflow-y-auto">
         {campaigns.length ? (
           campaigns.map((campaign) => {
@@ -55,7 +62,8 @@ export function CampaignSidebar({ campaigns }: CampaignSidebarProps) {
           })
         ) : (
           <div className="rounded-lg border border-dashed px-3 py-6 text-xs text-muted-foreground">
-            No campaigns yet. Create your first run to start managing context.
+            No campaigns yet. Create your first run to start managing
+            context.
           </div>
         )}
       </nav>
