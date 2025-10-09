@@ -1,51 +1,125 @@
-import { DeployButton } from "@/components/deploy-button";
-import { EnvVarWarning } from "@/components/env-var-warning";
-import { AuthButton } from "@/components/auth-button";
-import { Hero } from "@/components/hero";
-import { ThemeSwitcher } from "@/components/theme-switcher";
-import { ConnectSupabaseSteps } from "@/components/tutorial/connect-supabase-steps";
-import { SignUpUserSteps } from "@/components/tutorial/sign-up-user-steps";
-import { hasEnvVars } from "@/lib/utils";
 import Link from "next/link";
 
-export default function Home() {
-  return (
-    <main className="min-h-screen flex flex-col items-center">
-      <div className="flex-1 w-full flex flex-col gap-20 items-center">
-        <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-          <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
-            <div className="flex gap-5 items-center font-semibold">
-              <Link href={"/"}>Next.js Supabase Starter</Link>
-              <div className="flex items-center gap-2">
-                <DeployButton />
-              </div>
-            </div>
-            {!hasEnvVars ? <EnvVarWarning /> : <AuthButton />}
-          </div>
-        </nav>
-        <div className="flex-1 flex flex-col gap-20 max-w-5xl p-5">
-          <Hero />
-          <main className="flex-1 flex flex-col gap-6 px-4">
-            <h2 className="font-medium text-xl mb-4">Next steps</h2>
-            {hasEnvVars ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-          </main>
-        </div>
+import { AuthButton } from "@/components/auth-button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/server";
 
-        <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
-          <p>
-            Powered by{" "}
-            <a
-              href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-              target="_blank"
-              className="font-bold hover:underline"
-              rel="noreferrer"
+const featureHighlights = [
+  {
+    title: "Instant NPC briefs",
+    description:
+      "Generate archetypes, quirks, and hooks in moments so your runners never see the seams.",
+  },
+  {
+    title: "Mission-ready locales",
+    description:
+      "Paint the scene with sensory hits, security notes, and complications tailored to each run.",
+  },
+  {
+    title: "Atmospheric prompts",
+    description:
+      "Drop-in ambient snippets to set the tone for smoke-filled bars, corporate vaults, or astral storms.",
+  },
+];
+
+export default async function Home() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.getUser();
+  const user = error ? null : data?.user ?? null;
+
+  return (
+    <div className="relative flex min-h-screen flex-col overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-slate-950 to-black" />
+      <div className="absolute inset-0 bg-cyber-grid opacity-40" />
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-24 right-14 h-72 w-72 rounded-full bg-cyan-500/30 blur-3xl" />
+        <div className="absolute -bottom-32 left-10 h-80 w-80 rounded-full bg-purple-500/20 blur-[110px]" />
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black via-transparent" />
+      </div>
+
+      <div className="relative z-10 flex flex-1 flex-col">
+        <header className="flex items-center justify-between px-6 py-6 md:px-10">
+          <Link
+            href="/"
+            className="text-xs font-semibold uppercase tracking-[0.6em] text-cyan-200/80 hover:text-cyan-200"
+          >
+            Shadowrun
+          </Link>
+          <AuthButton />
+        </header>
+
+        <main className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center md:px-12">
+          <div className="mx-auto max-w-3xl space-y-6">
+            <span className="text-xs font-medium uppercase tracking-[0.4em] text-cyan-400/80">
+              Shadowrun GM Toolkit
+            </span>
+            <h1 className="text-4xl font-semibold leading-tight text-slate-50 md:text-6xl md:leading-tight">
+              Shadowrun Content Creator Assistant
+            </h1>
+            <p className="text-base text-slate-300/80 md:text-lg">
+              Streamline preparation and improvisation. Spin up NPCs, locations,
+              and ambient beats that match your campaign context without breaking
+              the pacing of the run.
+            </p>
+          </div>
+
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
+            <Link
+              href="/home"
+              className={cn(
+                buttonVariants({ size: "lg" }),
+                "bg-gradient-to-r from-cyan-400 via-cyan-500 to-purple-500 text-slate-950 shadow-[0_0_30px_rgba(34,211,238,0.35)] hover:from-cyan-300 hover:via-cyan-400 hover:to-purple-400",
+              )}
             >
-              Supabase
-            </a>
+              Enter the Grid
+            </Link>
+            {!user && (
+              <Link
+                href="/auth/login"
+                className={cn(
+                  buttonVariants({ size: "lg", variant: "outline" }),
+                  "border-cyan-500/60 bg-white/5 text-cyan-200 hover:border-cyan-300 hover:text-cyan-100",
+                )}
+              >
+                Log in with Supabase
+              </Link>
+            )}
+          </div>
+
+          <div className="mt-20 grid w-full max-w-4xl gap-6 md:grid-cols-3">
+            {featureHighlights.map((feature) => (
+              <div
+                key={feature.title}
+                className="relative overflow-hidden rounded-xl border border-cyan-500/30 bg-slate-900/60 p-6 text-left shadow-[0_20px_60px_-30px_rgba(34,211,238,0.45)] backdrop-blur"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-purple-500/10" />
+                <div className="relative space-y-3">
+                  <h3 className="text-lg font-semibold text-slate-50">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-slate-300/80">
+                    {feature.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
+
+        <footer className="flex justify-center px-6 py-8 text-xs text-slate-500 md:px-10">
+          <p>
+            Built for game masters who want to keep the shadows moving.{" "}
+            <Link
+              href="/auth/sign-up"
+              className="text-cyan-300 hover:text-cyan-100"
+            >
+              Create an account
+            </Link>{" "}
+            to start drafting tonight&apos;s run.
           </p>
-          <ThemeSwitcher />
         </footer>
       </div>
-    </main>
+    </div>
   );
 }
