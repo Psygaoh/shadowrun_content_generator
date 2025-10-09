@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { XIcon } from "lucide-react";
+import { FileTextIcon, XIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import type { Campaign } from "@/lib/campaigns";
@@ -22,7 +22,7 @@ export function CampaignNotesDrawer({
   campaigns,
 }: CampaignNotesDrawerProps) {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [activeCampaignId, setActiveCampaignId] = useState<string | null>(
     null,
   );
@@ -60,13 +60,11 @@ export function CampaignNotesDrawer({
 
     if (!activeCampaignId) {
       const nextCampaignId = campaigns[0]?.id ?? null;
-      if (nextCampaignId) {
-        if (typeof window !== "undefined") {
-          window.localStorage.setItem(
-            ACTIVE_CAMPAIGN_STORAGE_KEY,
-            nextCampaignId,
-          );
-        }
+      if (nextCampaignId && typeof window !== "undefined") {
+        window.localStorage.setItem(
+          ACTIVE_CAMPAIGN_STORAGE_KEY,
+          nextCampaignId,
+        );
       }
       setActiveCampaignId(nextCampaignId);
       return;
@@ -77,7 +75,14 @@ export function CampaignNotesDrawer({
     );
 
     if (!exists) {
-      setActiveCampaignId(campaigns[0]?.id ?? null);
+      const fallbackId = campaigns[0]?.id ?? null;
+      setActiveCampaignId(fallbackId);
+      if (fallbackId && typeof window !== "undefined") {
+        window.localStorage.setItem(
+          ACTIVE_CAMPAIGN_STORAGE_KEY,
+          fallbackId,
+        );
+      }
     }
   }, [campaigns, activeCampaignId]);
 
@@ -90,33 +95,62 @@ export function CampaignNotesDrawer({
     );
   }, [campaigns, activeCampaignId]);
 
+  useEffect(() => {
+    if (!isPanelOpen) {
+      return;
+    }
+    const handler = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsPanelOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [isPanelOpen]);
+
   if (isHome) {
     return null;
   }
 
   const buttonDisabled = !activeCampaign;
 
+  const handleToggle = () => {
+    if (buttonDisabled) {
+      return;
+    }
+    setIsPanelOpen((open) => !open);
+  };
+
   return (
     <>
-      <div className="relative">
-        <div className="pointer-events-none absolute inset-0 rounded-full blur-md shadow-[0_0_24px_rgba(56,189,248,0.35)]" />
-        <Button
-          size="sm"
-          variant="outline"
-          className="relative text-[0.625rem] uppercase tracking-[0.2em]"
-          onClick={() => setIsOpen(true)}
-          disabled={buttonDisabled}
-        >
-          Notes
-        </Button>
-      </div>
+      <aside className="notes-rail sticky top-24 hidden h-full min-h-[24rem] w-16 shrink-0 flex-col items-center justify-between border-l border-border/70 bg-background/40 py-6 backdrop-blur md:flex">
+        <div className="flex flex-col items-center gap-4">
+          <div className="pointer-events-none h-12 w-12 rounded-full bg-primary/15 blur-xl" />
+          <Button
+            type="button"
+            size="icon"
+            variant={isPanelOpen ? "default" : "outline"}
+            className="flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full text-[0.6rem] uppercase tracking-[0.28em]"
+            disabled={buttonDisabled}
+            onClick={handleToggle}
+            aria-expanded={isPanelOpen}
+            aria-label="Toggle campaign notes"
+          >
+            <FileTextIcon className="size-4" />
+            <span className="text-[0.55rem] tracking-[0.3em]">Notes</span>
+          </Button>
+        </div>
+        <span className="text-[0.55rem] uppercase tracking-[0.35em] text-muted-foreground/70 [writing-mode:vertical-rl]">
+          Context
+        </span>
+      </aside>
 
-      {isOpen && activeCampaign ? (
+      {isPanelOpen && activeCampaign ? (
         <div
           className="fixed inset-0 z-50 flex justify-end bg-background/70 backdrop-blur-sm"
           onClick={(event) => {
             if (event.target === event.currentTarget) {
-              setIsOpen(false);
+              setIsPanelOpen(false);
             }
           }}
         >
@@ -133,7 +167,7 @@ export function CampaignNotesDrawer({
               <Button
                 size="icon"
                 variant="ghost"
-                onClick={() => setIsOpen(false)}
+                onClick={() => setIsPanelOpen(false)}
                 aria-label="Close notes"
               >
                 <XIcon className="size-4" />

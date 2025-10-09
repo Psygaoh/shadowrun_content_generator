@@ -42,7 +42,6 @@ export default async function AppLayout({
         brandHref="/home"
         rightSlot={
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <CampaignNotesDrawer campaigns={campaigns} />
             <ThemeSwitcher compact />
             <span className="hidden text-muted-foreground/80 sm:inline">
               {user.email}
@@ -59,6 +58,7 @@ export default async function AppLayout({
         <div className="flex-1 min-w-0">
           {children}
         </div>
+        <CampaignNotesDrawer campaigns={campaigns} />
       </main>
 
       <PageFooter variant="app" />
