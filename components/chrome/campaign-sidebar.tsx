@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import type { CampaignSummary } from "@/lib/campaigns";
 import { CreateCampaignDialog } from "@/components/campaigns/create-campaign-dialog";
+import { ACTIVE_CAMPAIGN_STORAGE_KEY } from "@/components/campaigns/campaign-notes-drawer";
 
 type CampaignSidebarProps = {
   campaigns: CampaignSummary[];
@@ -15,6 +16,16 @@ export function CampaignSidebar({ campaigns }: CampaignSidebarProps) {
   const pathname = usePathname();
 
   const isHomePage = pathname === "/home";
+
+  const handleCampaignSelect = (campaignId: string) => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    window.localStorage.setItem(
+      ACTIVE_CAMPAIGN_STORAGE_KEY,
+      campaignId,
+    );
+  };
 
   if (isHomePage) {
     return null;
@@ -42,6 +53,7 @@ export function CampaignSidebar({ campaigns }: CampaignSidebarProps) {
               <Link
                 key={campaign.id}
                 href={href}
+                onClick={() => handleCampaignSelect(campaign.id)}
                 className={cn(
                   "rounded-lg border px-3 py-2 text-sm transition-colors",
                   isActive

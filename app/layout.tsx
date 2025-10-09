@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
+
+import { geistSans, majorMono } from "@/lib/fonts";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -14,12 +15,6 @@ export const metadata: Metadata = {
     "Generate Shadowrun-ready NPCs, locations, and ambiences in seconds with a cyberpunk-focused toolkit for game masters.",
 };
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  display: "swap",
-  subsets: ["latin"],
-});
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,7 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.className} antialiased`}>
+      <body
+        className={`${geistSans.className} ${majorMono.variable} antialiased`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="sr4"

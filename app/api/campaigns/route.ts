@@ -46,14 +46,18 @@ export async function POST(request: Request) {
     );
   }
 
-  const { error } = await supabase.from("campaigns").insert({
-    name,
-    prompt_context: promptContext,
-    description,
-    gamemaster_id: user.id,
-  });
+  const { data, error } = await supabase
+    .from("campaigns")
+    .insert({
+      name,
+      prompt_context: promptContext,
+      description,
+      gamemaster_id: user.id,
+    })
+    .select("id")
+    .single();
 
-  if (error) {
+  if (error || !data) {
     console.error("[campaigns] create failed", error);
     return NextResponse.json(
       { message: "Unable to create campaign. Try again later." },
@@ -61,5 +65,8 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({ success: true }, { status: 201 });
+  return NextResponse.json(
+    { success: true, campaignId: data.id },
+    { status: 201 },
+  );
 }

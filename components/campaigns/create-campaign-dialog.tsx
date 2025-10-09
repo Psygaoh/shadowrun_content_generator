@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ACTIVE_CAMPAIGN_STORAGE_KEY } from "./campaign-notes-drawer";
 
 type CampaignFormState = {
   name: string;
@@ -71,8 +72,25 @@ export function CreateCampaignDialog() {
         return;
       }
 
+      const result = await response.json().catch(() => null);
+      const newCampaignId =
+        result && typeof result.campaignId === "string"
+          ? result.campaignId
+          : null;
+
+      if (newCampaignId && typeof window !== "undefined") {
+        window.localStorage.setItem(
+          ACTIVE_CAMPAIGN_STORAGE_KEY,
+          newCampaignId,
+        );
+      }
+
       closeDialog();
       router.refresh();
+
+      if (newCampaignId) {
+        router.push(`/campaigns/${newCampaignId}`);
+      }
     } catch (error) {
       console.error(error);
       setErrorMessage("Unexpected error. Please try again.");

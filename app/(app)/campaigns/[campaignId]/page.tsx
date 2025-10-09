@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 
 import { getCampaignById } from "@/lib/campaigns";
+import { PromptContextEditor } from "@/components/campaigns/prompt-context-editor";
+import { majorMono } from "@/lib/fonts";
 
 type CampaignPageProps = {
   params: {
@@ -17,71 +19,31 @@ export default async function CampaignDetailPage({
     notFound();
   }
 
-  const promptContext = campaign.prompt_context?.trim() ?? "";
-  const description = campaign.description?.trim() ?? "";
+  const promptContext = campaign.prompt_context ?? "";
 
   return (
-    <section className="space-y-10">
-      <div className="space-y-3">
+    <section className="space-y-12">
+      <div className="space-y-5">
         <span className="callout-label text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">
           Campaign Control
         </span>
-        <h1 className="text-3xl font-semibold text-foreground md:text-4xl">
+        <h1 className={`campaign-title text-4xl md:text-5xl ${majorMono.className}`}>
           {campaign.name}
         </h1>
-        {promptContext ? (
-          <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
-            {promptContext}
-          </p>
-        ) : (
-          <p className="text-sm italic text-muted-foreground/80">
-            No context tagline yet. Add a quick summary to align generators.
-          </p>
-        )}
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        <article className="feature-card rounded-xl border border-border/70 bg-background/50 p-6 backdrop-blur">
-          <header className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.28em] text-foreground/90">
-              Prompt Context
-            </h2>
-            <span className="text-[0.65rem] uppercase tracking-[0.3em] text-muted-foreground">
-              For generators
-            </span>
-          </header>
-          <p className="text-sm text-muted-foreground">
-            {promptContext
-              ? promptContext
-              : "Use this space to capture a punchy mission framing or campaign tone. Generators will draw from it soon."}
-          </p>
-        </article>
-
-        <article className="feature-card rounded-xl border border-border/70 bg-background/50 p-6 backdrop-blur">
-          <header className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.28em] text-foreground/90">
-              Campaign Notes
-            </h2>
-            <span className="text-[0.65rem] uppercase tracking-[0.3em] text-muted-foreground">
-              Deep brief
-            </span>
-          </header>
-          <p className="text-sm text-muted-foreground">
-            {description
-              ? description
-              : "Expand on factions, twists, or pacing beats for the campaign. This richer brief will anchor future modules."}
-          </p>
-        </article>
+        <PromptContextEditor
+          campaignId={campaign.id}
+          initialValue={promptContext}
+        />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <article className="feature-card rounded-xl border border-border/70 bg-background/50 p-6 backdrop-blur">
           <header className="mb-4 flex items-center justify-between">
             <h2 className="text-sm font-semibold uppercase tracking-[0.28em] text-foreground/90">
-              Cast of Figures
+              Shadow Roster
             </h2>
             <span className="text-[0.65rem] uppercase tracking-[0.3em] text-muted-foreground">
-              NPC roster
+              NPC tracking
             </span>
           </header>
           <p className="text-sm text-muted-foreground">
@@ -98,7 +60,7 @@ export default async function CampaignDetailPage({
         <article className="feature-card rounded-xl border border-border/70 bg-background/50 p-6 backdrop-blur">
           <header className="mb-4 flex items-center justify-between">
             <h2 className="text-sm font-semibold uppercase tracking-[0.28em] text-foreground/90">
-              Staging Grounds
+              Operation Sites
             </h2>
             <span className="text-[0.65rem] uppercase tracking-[0.3em] text-muted-foreground">
               Locations

@@ -9,6 +9,7 @@ import { LogoutButton } from "@/components/logout-button";
 import { AppNavigation } from "@/components/chrome/app-navigation";
 import { CampaignSidebar } from "@/components/chrome/campaign-sidebar";
 import { listCampaigns, type CampaignSummary } from "@/lib/campaigns";
+import { CampaignNotesDrawer } from "@/components/campaigns/campaign-notes-drawer";
 
 export default async function AppLayout({
   children,
@@ -41,6 +42,7 @@ export default async function AppLayout({
         brandHref="/home"
         rightSlot={
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <CampaignNotesDrawer campaigns={campaigns} />
             <ThemeSwitcher compact />
             <span className="hidden text-muted-foreground/80 sm:inline">
               {user.email}
