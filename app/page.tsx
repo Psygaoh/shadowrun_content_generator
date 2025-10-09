@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { AuthButton } from "@/components/auth-button";
 import { PageHeader } from "@/components/chrome/page-header";
+import { PageFooter } from "@/components/chrome/page-footer";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
@@ -100,18 +101,7 @@ export default async function Home() {
           </div>
         </main>
 
-        <footer className="flex justify-center px-6 py-8 text-xs text-slate-500 md:px-10">
-          <p>
-            Built for game masters who want to keep the shadows moving.{" "}
-            <Link
-              href="/auth/sign-up"
-              className="text-cyan-300 hover:text-cyan-100"
-            >
-              Create an account
-            </Link>{" "}
-            to start drafting tonight&apos;s run.
-          </p>
-        </footer>
+        <PageFooter />
       </div>
     </div>
   );

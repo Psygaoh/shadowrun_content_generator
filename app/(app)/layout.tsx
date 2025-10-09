@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { LogoutButton } from "@/components/logout-button";
 import { PageHeader } from "@/components/chrome/page-header";
+import { PageFooter } from "@/components/chrome/page-footer";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AppLayout({
@@ -46,9 +47,7 @@ export default async function AppLayout({
           {children}
         </main>
 
-        <footer className="flex justify-center border-t border-white/5 px-6 py-6 text-xs text-slate-500 md:px-10">
-          <p>Secure area - only those invited to the shadows can proceed.</p>
-        </footer>
+        <PageFooter variant="app" />
       </div>
     </div>
   );
