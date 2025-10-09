@@ -3,31 +3,56 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
 
-// Set OPENAI_API_KEY (required) and optionally OPENAI_MODEL in .env.local / .env.production.
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY!;
-const OPENAI_MODEL = process.env.OPENAI_MODEL! ?? "gpt-5-nano";
+import { createClient } from "@/lib/supabase/server";
+
+const DEFAULT_OPENAI_MODEL = "gpt-5-nano";
+
+function buildOpenAIClient() {
+  const apiKey = process.env.OPENAI_API_KEY;
+
+  if (!apiKey) {
+    return { client: null, error: "OpenAI API key missing. Populate OPENAI_API_KEY in your environment before running the connectivity test." };
+  }
+
+  return {
+    client: new OpenAI({ apiKey }),
+    error: null,
+  };
+}
 
 export async function POST() {
-  console.log("we got the key!")
-  if (!OPENAI_API_KEY) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
     return NextResponse.json(
       {
         success: false,
-        message:
-          "OpenAI API key missing. Populate OPENAI_API_KEY in your environment before running the connectivity test.",
+        message: "Authentication required. Please sign in and try again.",
+      },
+      { status: 401 },
+    );
+  }
+
+  const { client, error } = buildOpenAIClient();
+
+  if (!client) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: error,
       },
       { status: 500 },
     );
   }
 
-  const client = new OpenAI({
-    apiKey: OPENAI_API_KEY,
-  });
+  const model = process.env.OPENAI_MODEL ?? DEFAULT_OPENAI_MODEL;
 
   try {
-    console.log("sendinguh")
     const response = await client.responses.create({
-      model: OPENAI_MODEL,
+      model,
       input: "Write a one-sentence bedtime story about a unicorn.",
     });
 
