@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,7 @@ export function CreateCampaignDialog() {
     useState<CampaignFormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [, startTransition] = useTransition();
 
   const closeDialog = () => {
     setIsOpen(false);
@@ -86,11 +87,12 @@ export function CreateCampaignDialog() {
       }
 
       closeDialog();
-      router.refresh();
-
       if (newCampaignId) {
         router.push(`/campaigns/${newCampaignId}`);
       }
+      startTransition(() => {
+        router.refresh();
+      });
     } catch (error) {
       console.error(error);
       setErrorMessage("Unexpected error. Please try again.");
