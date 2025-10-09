@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { LogoutButton } from "@/components/logout-button";
+import { PageHeader } from "@/components/chrome/page-header";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AppLayout({
@@ -29,18 +29,18 @@ export default async function AppLayout({
       </div>
 
       <div className="relative z-10 flex min-h-screen flex-col">
-        <header className="flex items-center justify-between border-b border-cyan-500/20 bg-slate-950/80 px-6 py-5 backdrop-blur md:px-10">
-          <Link
-            href="/home"
-            className="text-xs font-semibold uppercase tracking-[0.5em] text-cyan-200/80 hover:text-cyan-200"
-          >
-            Shadowrun
-          </Link>
-          <div className="flex items-center gap-4 text-xs text-slate-300/80">
-            <span className="hidden sm:inline text-slate-400">{user.email}</span>
-            <LogoutButton />
-          </div>
-        </header>
+        <PageHeader
+          variant="app"
+          brandHref="/home"
+          rightSlot={
+            <div className="flex items-center gap-4 text-xs text-slate-300/80">
+              <span className="hidden sm:inline text-slate-400">
+                {user.email}
+              </span>
+              <LogoutButton />
+            </div>
+          }
+        />
 
         <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-6 py-12 md:px-12">
           {children}

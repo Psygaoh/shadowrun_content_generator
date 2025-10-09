@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { AuthButton } from "@/components/auth-button";
+import { PageHeader } from "@/components/chrome/page-header";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/server";
@@ -39,15 +40,7 @@ export default async function Home() {
       </div>
 
       <div className="relative z-10 flex flex-1 flex-col">
-        <header className="flex items-center justify-between px-6 py-6 md:px-10">
-          <Link
-            href="/"
-            className="text-xs font-semibold uppercase tracking-[0.6em] text-cyan-200/80 hover:text-cyan-200"
-          >
-            Shadowrun
-          </Link>
-          <AuthButton />
-        </header>
+        <PageHeader rightSlot={<AuthButton />} />
 
         <main className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center md:px-12">
           <div className="mx-auto max-w-3xl space-y-6">
