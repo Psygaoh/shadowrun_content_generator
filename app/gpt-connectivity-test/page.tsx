@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 
 type ConnectivityResult = {
+  success: boolean;
   message: string;
 };
 
@@ -10,6 +11,7 @@ export default function GptConnectivityTestPage() {
   const [isPending, startTransition] = useTransition();
   const [result, setResult] = useState<ConnectivityResult | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  
 
   const handleTestConnectivity = () => {
     startTransition(async () => {
@@ -28,6 +30,11 @@ export default function GptConnectivityTestPage() {
         }
 
         const data = (await response.json()) as ConnectivityResult;
+
+        if (!data.success) {
+          throw new Error(data.message);
+        }
+
         setResult(data);
       } catch (error) {
         setResult(null);
