@@ -1,112 +1,151 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+# Shadowrun Content Creator Assistant
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+Shadowrun Content Creator Assistant is a cyberpunk-flavored toolkit that helps game masters generate NPCs, locations, and ambience snippets in seconds while staying true to their campaign.
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+## Contexte produit (FR)
 
-## Features
+### Qu'est-ce que c'est ?
+**Shadowrun Assistant** est une petite application pensee pour le/la **MJ**. Elle genere en quelques secondes des **PNJ**, des **descriptions de lieux** et des **ambiances** pretes a jouer, afin d'aider pendant la preparation **et** a l'impro pendant la partie.
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Middleware
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Password-based authentication block installed via the [Supabase UI Library](https://supabase.com/ui/docs/nextjs/password-based-auth)
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+### Pour qui ?
+- **MJ** de Shadowrun qui veut gagner du temps, improviser mieux et garder de la coherence.
+- (Plus tard) **Joueurs** en lecture seule, pour consulter ce que le MJ decide de partager.
 
-## Demo
+### Ce que l'app fait (MVP)
+- **Generer des PNJ** : archetype, traits marquants, competences cles, equipement/augmentations, tics de roleplay, accroches de scene.
+- **Decrire des lieux** : ce qu'on voit/entend/ressent, securite, complications, petit "gardien" du lieu, accroches.
+- **Proposer des ambiances** : mini-textes a lire, mood/sons/odeurs, 2-3 variantes rapides.
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+Chaque sortie est courte, jouable et copiable (texte/Markdown). Le but : fournir de la matiere utilisable tout de suite sans ralentir la table.
 
-## Deploy to Vercel
+### Flux utilisateur
+1. Choisir la campagne active (votre partie en cours).
+2. Cliquer **PNJ**, **Lieu** ou **Ambiance** -> remplir un mini-formulaire.
+3. Lire le resultat (stream), puis au besoin : **Condenser**, **Developper** ou **Varier**.
+4. Copier dans vos notes / VTT, ou enregistrer dans la campagne pour le retrouver plus tard.
 
-Vercel deployment will guide you through creating a Supabase account and project.
+> Au lancement, on ignore les villes, les tons, les niveaux et les packs de lore : l'objectif est d'avoir un noyau utile immediatement. Ces options reviendront plus tard avec un contexte IA enrichi.
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+### Principes cles
+- **Rapidité** : 2-3 clics, un texte pret a jouer.
+- **Coherence** : l'app s'appuie sur un contexte de campagne (resume, themes, contraintes) defini par le MJ.
+- **Sobriete** : pas d'ecrans charges, pas de reglages interminables.
+- **Portabilite** : utilisable sur ordinateur et mobile, installable comme une app (PWA).
+- **Cloisonnement** : chaque projet Shadowrun reste separe de vos autres univers.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+### Hors scope (MVP)
+- Pas d'images ni d'illustrations.
+- Pas de cartes interactives.
+- Pas de chat en temps reel avec les joueurs.
+- Pas d'exports profonds vers des VTT (on reste sur du texte/Markdown copiable).
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+### Etapes suivantes
+- Villes / tons / niveaux (Seattle, Paris, etc.) et packs de lore selectionnables.
+- Acces joueur (lecture seule) pour partager PNJ, lieux et handouts.
+- Exports vers Notion, Foundry et autres outils.
+- Variantes rue / corpo / magie, favoris, recherche et ameliorations ergonomiques.
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+### Terminologie
+- **PNJ** : Personnage Non Joueur.
+- **Lieu** : cadre de scene jouable (visuel, sonore, risques).
+- **Ambiance** : court texte d'atmosphere a lire pendant la partie.
+- **Campagne** : votre partie en cours (contexte, notes, elements enregistres).
 
-## Configure production environment variables
+> Objectif du MVP : une app minimaliste, fiable et rapide qui donne de quoi faire respirer votre Shadowrun, pile quand vous en avez besoin.
 
-- Copy `.env.production.example` to `.env.production` if you want to run `next build && next start` locally with your production Supabase project values.
-- On Vercel, add the same keys (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`) under **Project Settings → Environment Variables**. Use the "Production" scope so they are available at build and runtime.
-- If you deploy elsewhere, create environment variables with the same names before running `next build`; Next.js will inline them during the build step.
-- Verify your setup locally by running `npm run build` followed by `npm run start`; the app should connect using the production credentials you supplied.
+## Tech stack
 
-## Clone and run locally
+- [Next.js 14+ (App Router)](https://nextjs.org)
+- [Supabase](https://supabase.com) pour l'authentification et la persistence
+- [Tailwind CSS](https://tailwindcss.com) et shadcn/ui pour l'UI
+- TypeScript, ESLint, Prettier, et Turbopack pour une DX rapide
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+## Project structure
 
-2. Create a Next.js app using the Supabase Starter template npx command
+```
+app/                 # Pages et layouts (App Router)
+  (app)/             # Zone protegee pour les utilisateurs connectes
+  auth/              # Flux d'authentification Supabase
+  notes/             # Exemples d'integration avec Supabase
+components/          # UI partagee (header, footer, boutons, etc.)
+  chrome/            # Elements de chrome reutilisables (header, footer, neon backdrop)
+lib/                 # Clients Supabase (server/browser), utilitaires
+public/              # Assets statiques, si necessaire
+```
 
+## Environment configuration
+
+Renseignez vos secrets Supabase avant de lancer l'app :
+
+```
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY=your-anon-key
+```
+
+- En local, copiez `.env.example` vers `.env.local` puis remplissez les valeurs.
+- Pour des builds de production locaux, copiez `.env.production.example` vers `.env.production`.
+- Sur Vercel (ou autre hebergeur), ajoutez ces variables dans les reglages de projet avant `next build`.
+
+## Local development
+
+1. Installez les dependances :
    ```bash
-   npx create-next-app --example with-supabase with-supabase-app
+   npm install
    ```
-
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
-   ```
-
-   ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
-   ```
-
-3. Use `cd` to change into the app's directory
-
-   ```bash
-   cd with-supabase-app
-   ```
-
-4. Rename `.env.example` to `.env.local` and update the following:
-
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
-   ```
-
-   Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://supabase.com/dashboard/project/_?showConnect=true)
-
-5. You can now run the Next.js local development server:
-
+2. Lancez le serveur de dev :
    ```bash
    npm run dev
    ```
+   L'app est disponible sur http://localhost:3000.
+3. Analysez le code :
+   ```bash
+   npm run lint
+   ```
+   Les builds generent des fichiers `.next/`; ils sont ignores par ESLint via `.eslintignore`.
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+## Deployment
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
+1. Assurez-vous que les variables d'environnement sont definies sur la plateforme cible.
+2. Construisez puis lancez :
+   ```bash
+   npm run build
+   npm run start
+   ```
+3. Pour Vercel, liez votre projet Supabase et verifiez la sync des variables avant de deployer.
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+## Workflow Git recommande
 
-## Feedback and issues
+1. Mettez `main` a jour :
+   ```bash
+   git checkout main
+   git pull origin main
+   ```
+2. Creez une branche dediee :
+   ```bash
+   git checkout -b feature/nom-clair
+   ```
+3. Commitez regulierement :
+   ```bash
+   git status
+   git add <fichiers>
+   git commit -m "message explicite"
+   ```
+4. Poussez et ouvrez une PR :
+   ```bash
+   git push -u origin feature/nom-clair
+   ```
+5. Apres merge, nettoyez :
+   ```bash
+   git checkout main
+   git pull origin main
+   git branch -d feature/nom-clair
+   git push origin --delete feature/nom-clair
+   ```
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+## Roadmap immediate
 
-## More Supabase examples
+- Finaliser les generateurs PNJ / lieux / ambiances cote back-end.
+- Ajouter la persistance par campagne et le partage lecture seule.
+- Etendre le chrome neon (backgrounds, overlays) a des composants reutilisables supplementaires si besoin.
+- Couvrir les nouveaux flux par des tests et des exemples de donnees.
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
