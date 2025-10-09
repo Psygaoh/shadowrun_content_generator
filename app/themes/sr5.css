@@ -1,0 +1,84 @@
+.theme-sr5 {
+  color-scheme: dark;
+  --background: 345 70% 4%;
+  --foreground: 350 25% 96%;
+  --card: 345 62% 7%;
+  --card-foreground: 350 25% 96%;
+  --popover: 345 62% 7%;
+  --popover-foreground: 350 25% 96%;
+  --primary: 349 86% 55%;
+  --primary-foreground: 353 100% 10%;
+  --secondary: 26 94% 45%;
+  --secondary-foreground: 30 100% 96%;
+  --muted: 345 30% 16%;
+  --muted-foreground: 354 22% 75%;
+  --accent: 352 60% 18%;
+  --accent-foreground: 0 0% 96%;
+  --border: 350 38% 18%;
+  --input: 350 38% 20%;
+  --ring: 350 90% 60%;
+  --chart-1: 350 84% 60%;
+  --chart-2: 27 91% 55%;
+  --chart-3: 200 75% 48%;
+  --chart-4: 45 92% 55%;
+  --chart-5: 325 78% 60%;
+  --radius: 0.5rem;
+
+  --primary-rgb: 244 63 94;
+  --brand-weak: rgba(244, 63, 94, 0.78);
+  --brand-strong: rgba(244, 63, 94, 1);
+  --label-color: rgba(244, 63, 94, 0.82);
+
+  --cta-primary-start: #f43f5e;
+  --cta-primary-mid: #fb7185;
+  --cta-primary-end: #f97316;
+  --cta-primary-hover-start: #fb7185;
+  --cta-primary-hover-mid: #f43f5e;
+  --cta-primary-hover-end: #fbbf24;
+  --cta-primary-shadow: rgba(244, 63, 94, 0.4);
+  --cta-primary-text: #140105;
+  --cta-secondary-border: rgba(244, 63, 94, 0.6);
+  --cta-secondary-hover-border: rgba(248, 113, 113, 0.85);
+  --cta-secondary-bg: rgba(48, 0, 12, 0.55);
+  --cta-secondary-hover-bg: rgba(248, 113, 113, 0.12);
+  --cta-secondary-text: rgba(255, 228, 230, 0.92);
+  --cta-secondary-hover-text: #fff1f2;
+
+  --feature-card-border: rgba(244, 63, 94, 0.4);
+  --feature-card-bg: rgba(20, 0, 8, 0.8);
+  --feature-card-shadow: rgba(244, 63, 94, 0.45);
+  --feature-card-overlay: linear-gradient(
+    135deg,
+    rgba(244, 63, 94, 0.22),
+    transparent,
+    rgba(251, 191, 36, 0.15)
+  );
+
+  --footer-link: rgba(244, 63, 94, 0.8);
+  --footer-link-hover: rgba(248, 113, 113, 1);
+  --header-landing-bg: rgba(20, 0, 14, 0.4);
+  --header-landing-border: rgba(244, 63, 94, 0.18);
+  --header-app-bg: rgba(18, 0, 12, 0.72);
+  --header-app-border: rgba(244, 63, 94, 0.22);
+  --header-blur: 45px;
+  --footer-landing-bg: rgba(20, 0, 12, 0.45);
+  --footer-landing-border: rgba(244, 63, 94, 0.16);
+  --footer-app-bg: rgba(16, 0, 10, 0.6);
+  --footer-app-border: rgba(244, 63, 94, 0.22);
+
+  --glow-primary-rgb: 244 63 94;
+  --glow-primary-alpha: 0.35;
+  --glow-primary-blur: 130px;
+  --glow-secondary-rgb: 251 191 36;
+  --glow-secondary-alpha: 0.24;
+  --glow-secondary-blur: 160px;
+  --grid-primary-rgb: 248 113 113;
+  --grid-primary-alpha: 0.12;
+  --grid-secondary-rgb: 127 29 29;
+  --grid-secondary-alpha: 0.18;
+  --backdrop-top: #140009;
+  --backdrop-middle: #1f0012;
+  --backdrop-bottom: #080003;
+  --backdrop-bottom-rgb: 8 0 3;
+  --backdrop-bottom-alpha: 0.9;
+}
