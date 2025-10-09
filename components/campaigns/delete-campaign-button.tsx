@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useCampaigns } from "@/components/campaigns/campaign-context";
 
 type DeleteCampaignButtonProps = {
@@ -17,16 +18,9 @@ export function DeleteCampaignButton({
 }: DeleteCampaignButtonProps) {
   const router = useRouter();
   const { removeCampaign } = useCampaigns();
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const closeConfirm = () => {
-    if (!isDeleting) {
-      setIsConfirmOpen(false);
-      setErrorMessage(null);
-    }
-  };
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -48,7 +42,7 @@ export function DeleteCampaignButton({
       }
 
       const fallbackId = removeCampaign(campaignId);
-      closeConfirm();
+      setOpen(false);
 
       if (fallbackId) {
         router.push(`/campaigns/${fallbackId}`);
@@ -66,63 +60,38 @@ export function DeleteCampaignButton({
 
   return (
     <>
-      {isConfirmOpen ? (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-background/70 p-4 backdrop-blur-sm"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              closeConfirm();
-            }
-          }}
-        >
-          <div className="w-full max-w-sm rounded-2xl border border-border/70 bg-background p-6 shadow-lg">
-            <header className="space-y-2">
-              <h2 className="text-base font-semibold text-destructive">
-                Delete campaign
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                This will permanently remove <strong>{campaignName}</strong>{" "}
-                and its data. This action cannot be undone.
-              </p>
-            </header>
-
-            <footer className="mt-6 flex items-center justify-between gap-3">
-              <div className="text-xs text-destructive">
-                {errorMessage ?? (
-                  <span className="text-muted-foreground">
-                    {/* TODO: also remove NPCs, locations, and other campaign-linked data */}
-                    No undo available.
-                  </span>
-                )}
-              </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={closeConfirm}
-                  disabled={isDeleting}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={handleDelete}
-                  disabled={isDeleting}
-                >
-                  {isDeleting ? "Deleting..." : "Delete"}
-                </Button>
-              </div>
-            </footer>
+      <ConfirmDialog
+        open={open}
+        onOpenChange={(next) => {
+          if (!isDeleting) {
+            setOpen(next);
+            setErrorMessage(null);
+          }
+        }}
+        title="Delete campaign"
+        description={
+          <div className="space-y-1 text-sm text-muted-foreground">
+            <p>
+              This will permanently remove <strong>{campaignName}</strong> and its
+              related data.
+            </p>
+            <p className="text-xs text-muted-foreground/80">
+              TODO: cascade deletion for NPCs, locations, and other linked entities.
+            </p>
           </div>
-        </div>
-      ) : null}
+        }
+        confirmLabel="Delete"
+        confirmVariant="destructive"
+        isLoading={isDeleting}
+        errorMessage={errorMessage}
+        onConfirm={handleDelete}
+      />
 
       <Button
         type="button"
         variant="destructive"
         size="sm"
-        onClick={() => setIsConfirmOpen(true)}
+        onClick={() => setOpen(true)}
       >
         Delete campaign
       </Button>

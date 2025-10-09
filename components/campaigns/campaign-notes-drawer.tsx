@@ -13,7 +13,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useCampaigns } from "@/components/campaigns/campaign-context";
-import { cn } from "@/lib/utils";
+import { SlidingRail } from "@/components/layout/sliding-rail";
 
 export function CampaignNotesDrawer() {
   const {
@@ -24,8 +24,8 @@ export function CampaignNotesDrawer() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
+  const [isDesktopOpen, setDesktopOpen] = useState(false);
+  const [isMobileOpen, setMobileOpen] = useState(false);
   const [noteValue, setNoteValue] = useState("");
   const [feedback, setFeedback] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -36,8 +36,8 @@ export function CampaignNotesDrawer() {
 
   useEffect(() => {
     if (isHome) {
-      setIsPanelOpen(false);
-      setIsMobilePanelOpen(false);
+      setDesktopOpen(false);
+      setMobileOpen(false);
     }
   }, [isHome]);
 
@@ -45,7 +45,7 @@ export function CampaignNotesDrawer() {
     if (!activeCampaignId) {
       return null;
     }
-    return campaigns.find((campaign) => campaign.id === activeCampaignId);
+    return campaigns.find((campaign) => campaign.id === activeCampaignId) ?? null;
   }, [campaigns, activeCampaignId]);
 
   useEffect(() => {
@@ -57,19 +57,23 @@ export function CampaignNotesDrawer() {
   }, [activeCampaign]);
 
   useEffect(() => {
-    if (!isMobilePanelOpen) {
+    if (!isMobileOpen) {
       return;
     }
     const handler = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setIsMobilePanelOpen(false);
+        setMobileOpen(false);
       }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [isMobilePanelOpen]);
+  }, [isMobileOpen]);
 
-  const buttonDisabled = !activeCampaign;
+  if (isHome) {
+    return null;
+  }
+
+  const disabled = !activeCampaign;
 
   const submitNotes = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -94,10 +98,6 @@ export function CampaignNotesDrawer() {
     setIsSaving(false);
   };
 
-  if (isHome) {
-    return null;
-  }
-
   const notesForm = (
     <form className="flex h-full flex-col gap-4" onSubmit={submitNotes}>
       <Textarea
@@ -121,31 +121,34 @@ export function CampaignNotesDrawer() {
     </form>
   );
 
-  const desktopPanel =
-    isPanelOpen && activeCampaign ? (
-      <aside className="notes-panel flex h-full w-80 shrink-0 flex-col gap-6 border-l border-border/70 bg-background/40 p-6 backdrop-blur">
-        <div className="space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-            Campaign notes
-          </span>
-          <div className="h-px w-full bg-border/60" />
-        </div>
-        <header>
-          <h2 className="text-lg font-semibold text-foreground">
-            {activeCampaign.name}
-          </h2>
-        </header>
-        <section className="flex-1 overflow-y-auto pr-2">{notesForm}</section>
-      </aside>
-    ) : null;
+  const desktopPanel = activeCampaign ? (
+    <aside className="flex h-full w-80 shrink-0 flex-col gap-6 border-border/70 bg-background/40 p-6 backdrop-blur">
+      <div className="space-y-2">
+        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+          Campaign notes
+        </span>
+        <div className="h-px w-full bg-border/60" />
+      </div>
+      <header>
+        <h2 className="text-lg font-semibold text-foreground">
+          {activeCampaign.name}
+        </h2>
+      </header>
+      <section className="flex-1 overflow-y-auto pr-2">{notesForm}</section>
+    </aside>
+  ) : (
+    <aside className="flex h-full w-80 shrink-0 flex-col items-center justify-center gap-2 border-border/70 bg-background/40 p-6 text-sm text-muted-foreground backdrop-blur">
+      <p>Select a campaign to view its notes.</p>
+    </aside>
+  );
 
   const mobileOverlay =
-    isMobilePanelOpen && activeCampaign ? (
+    isMobileOpen && activeCampaign ? (
       <div
         className="fixed inset-0 z-50 flex justify-end bg-background/70 backdrop-blur-sm lg:hidden"
         onClick={(event) => {
           if (event.target === event.currentTarget) {
-            setIsMobilePanelOpen(false);
+            setMobileOpen(false);
           }
         }}
       >
@@ -162,7 +165,7 @@ export function CampaignNotesDrawer() {
             <Button
               size="icon"
               variant="ghost"
-              onClick={() => setIsMobilePanelOpen(false)}
+              onClick={() => setMobileOpen(false)}
               aria-label="Close notes"
             >
               <XIcon className="size-4" />
@@ -183,11 +186,11 @@ export function CampaignNotesDrawer() {
           size="sm"
           variant="outline"
           onClick={() => {
-            if (!buttonDisabled) {
-              setIsMobilePanelOpen(true);
+            if (!disabled) {
+              setMobileOpen(true);
             }
           }}
-          disabled={buttonDisabled}
+          disabled={disabled}
           className="text-[0.7rem] uppercase tracking-[0.3em]"
         >
           Campaign Notes
@@ -196,42 +199,23 @@ export function CampaignNotesDrawer() {
 
       {mobileOverlay}
 
-      <div className="relative hidden h-full items-stretch lg:flex">
-        <div
-          className={cn(
-            "transition-all duration-300",
-            isPanelOpen
-              ? "w-80 opacity-100"
-              : "w-0 opacity-0 [pointer-events:none]",
-          )}
-        >
-          {desktopPanel}
-        </div>
-        <aside className="notes-rail sticky top-24 flex h-full min-h-[24rem] w-16 shrink-0 flex-col items-center justify-between border-l border-border/70 bg-background/40 py-6 backdrop-blur">
-          <div className="flex flex-col items-center gap-4">
-            <div className="pointer-events-none h-12 w-12 rounded-full bg-primary/15 blur-xl" />
-            <Button
-              type="button"
-              size="icon"
-              variant={isPanelOpen ? "default" : "outline"}
-              className="flex h-12 w-12 items-center justify-center rounded-full"
-              disabled={buttonDisabled}
-              onClick={() => setIsPanelOpen((open) => !open)}
-              aria-expanded={isPanelOpen}
-              aria-label="Toggle campaign notes"
-            >
-              {isPanelOpen ? (
-                <ChevronRight className="size-4" />
-              ) : (
-                <ChevronLeft className="size-4" />
-              )}
-            </Button>
-          </div>
-          <span className="text-[0.55rem] uppercase tracking-[0.35em] text-muted-foreground/70 [writing-mode:vertical-rl]">
-            Campaign notes
-          </span>
-        </aside>
-      </div>
+      <SlidingRail
+        side="right"
+        open={isDesktopOpen && !disabled}
+        onOpenChange={(next) => {
+          if (!disabled) {
+            setDesktopOpen(next);
+          }
+        }}
+        panelWidthClass="w-80"
+        toggleDisabled={disabled}
+        toggleContent={(open) =>
+          open ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />
+        }
+        verticalLabel="Campaign notes"
+      >
+        {desktopPanel}
+      </SlidingRail>
     </>
   );
 }

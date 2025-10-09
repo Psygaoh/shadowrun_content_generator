@@ -7,8 +7,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { CreateCampaignDialog } from "@/components/campaigns/create-campaign-dialog";
-import { Button } from "@/components/ui/button";
 import { useCampaigns } from "@/components/campaigns/campaign-context";
+import { SlidingRail } from "@/components/layout/sliding-rail";
 
 export function CampaignSidebar() {
   const pathname = usePathname();
@@ -62,7 +62,7 @@ export function CampaignSidebar() {
     );
 
   const panel = (
-    <aside className="campaign-sidebar hidden h-full w-64 shrink-0 flex-col gap-4 border-r border-border/70 bg-background/40 p-4 backdrop-blur lg:flex">
+    <aside className="campaign-sidebar flex h-full flex-col gap-4 border-border/70 bg-background/40 p-4 backdrop-blur">
       <div className="space-y-2">
         <span className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
           Campaigns
@@ -112,39 +112,18 @@ export function CampaignSidebar() {
       </div>
 
       <div className="relative hidden h-full items-stretch lg:flex">
-        <div
-          className={cn(
-            "transition-all duration-300",
-            isPanelOpen
-              ? "w-64 opacity-100"
-              : "w-0 opacity-0 [pointer-events:none]",
-          )}
+        <SlidingRail
+          side="left"
+          open={isPanelOpen}
+          onOpenChange={setIsPanelOpen}
+          panelWidthClass="w-64"
+          toggleContent={(open) =>
+            open ? <ChevronLeft className="size-4" /> : <ChevronRight className="size-4" />
+          }
+          verticalLabel="Campaigns"
         >
-          {isPanelOpen ? panel : null}
-        </div>
-        <aside className="campaign-rail sticky top-24 flex h-full min-h-[24rem] w-16 shrink-0 flex-col items-center justify-between border-r border-border/70 bg-background/40 py-6 backdrop-blur">
-          <div className="flex flex-col items-center gap-4">
-            <div className="pointer-events-none h-12 w-12 rounded-full bg-primary/15 blur-xl" />
-            <Button
-              type="button"
-              size="icon"
-              variant={isPanelOpen ? "default" : "outline"}
-              className="flex h-12 w-12 items-center justify-center rounded-full"
-              onClick={() => setIsPanelOpen((open) => !open)}
-              aria-expanded={isPanelOpen}
-              aria-label="Toggle campaigns"
-            >
-              {isPanelOpen ? (
-                <ChevronLeft className="size-4" />
-              ) : (
-                <ChevronRight className="size-4" />
-              )}
-            </Button>
-          </div>
-          <span className="text-[0.55rem] uppercase tracking-[0.35em] text-muted-foreground/70 [writing-mode:vertical-rl]">
-            Campaigns
-          </span>
-        </aside>
+          {panel}
+        </SlidingRail>
       </div>
     </>
   );

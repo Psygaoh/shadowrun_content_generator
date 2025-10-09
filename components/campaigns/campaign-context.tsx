@@ -84,11 +84,15 @@ export function CampaignsProvider({
 
   const setActiveCampaignId = useCallback((campaignId: string | null) => {
     setActiveCampaignIdState(campaignId);
-    if (typeof window !== "undefined" && campaignId) {
-      window.localStorage.setItem(
-        ACTIVE_CAMPAIGN_STORAGE_KEY,
-        campaignId,
-      );
+    if (typeof window !== "undefined") {
+      if (campaignId) {
+        window.localStorage.setItem(
+          ACTIVE_CAMPAIGN_STORAGE_KEY,
+          campaignId,
+        );
+      } else {
+        window.localStorage.removeItem(ACTIVE_CAMPAIGN_STORAGE_KEY);
+      }
     }
   }, []);
 
