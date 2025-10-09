@@ -20,6 +20,7 @@ type CampaignsContextValue = {
   activeCampaignId: string | null;
   setActiveCampaignId: (campaignId: string | null) => void;
   updateCampaign: (campaignId: string, patch: Partial<Campaign>) => void;
+  removeCampaign: (campaignId: string) => string | null;
   saveCampaignNotes: (
     campaignId: string,
     description: string,
@@ -102,6 +103,42 @@ export function CampaignsProvider({
     [],
   );
 
+  const removeCampaign = useCallback(
+    (campaignId: string) => {
+      let fallbackId: string | null = null;
+
+      setCampaigns((previous) => {
+        const next = previous.filter(
+          (campaign) => campaign.id !== campaignId,
+        );
+        fallbackId = next[0]?.id ?? null;
+        return next;
+      });
+
+      setActiveCampaignIdState((current) => {
+        if (current !== campaignId) {
+          return current;
+        }
+
+        if (typeof window !== "undefined") {
+          if (fallbackId) {
+            window.localStorage.setItem(
+              ACTIVE_CAMPAIGN_STORAGE_KEY,
+              fallbackId,
+            );
+          } else {
+            window.localStorage.removeItem(ACTIVE_CAMPAIGN_STORAGE_KEY);
+          }
+        }
+
+        return fallbackId;
+      });
+
+      return fallbackId;
+    },
+    [],
+  );
+
   const saveCampaignNotes = useCallback(
     async (campaignId: string, description: string) => {
       try {
@@ -145,9 +182,17 @@ export function CampaignsProvider({
       activeCampaignId,
       setActiveCampaignId,
       updateCampaign,
+      removeCampaign,
       saveCampaignNotes,
     }),
-    [campaigns, activeCampaignId, setActiveCampaignId, updateCampaign, saveCampaignNotes],
+    [
+      campaigns,
+      activeCampaignId,
+      setActiveCampaignId,
+      updateCampaign,
+      removeCampaign,
+      saveCampaignNotes,
+    ],
   );
 
   return (

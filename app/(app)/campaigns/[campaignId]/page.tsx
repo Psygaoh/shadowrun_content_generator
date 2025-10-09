@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 
 import { getCampaignById } from "@/lib/campaigns";
 import { PromptContextEditor } from "@/components/campaigns/prompt-context-editor";
+import { DeleteCampaignButton } from "@/components/campaigns/delete-campaign-button";
 import { majorMono } from "@/lib/fonts";
 
 type CampaignPageProps = {
@@ -24,14 +25,22 @@ export default async function CampaignDetailPage({
 
   return (
     <section className="space-y-12">
-      <div className="space-y-5">
-        <h1 className={`campaign-title text-4xl md:text-5xl ${majorMono.className}`}>
-          {campaign.name}
-        </h1>
-        <PromptContextEditor
-          campaignId={campaign.id}
-          initialValue={promptContext}
-        />
+      <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+        <div className="space-y-5 md:flex-1">
+          <h1 className={`campaign-title text-4xl md:text-5xl ${majorMono.className}`}>
+            {campaign.name}
+          </h1>
+          <PromptContextEditor
+            campaignId={campaign.id}
+            initialValue={promptContext}
+          />
+        </div>
+        <div className="flex flex-shrink-0 items-start justify-end md:pl-6">
+          <DeleteCampaignButton
+            campaignId={campaign.id}
+            campaignName={campaign.name}
+          />
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">

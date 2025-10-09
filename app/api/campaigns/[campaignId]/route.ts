@@ -124,3 +124,40 @@ export async function PATCH(
 
   return NextResponse.json({ success: true }, { status: responseStatus });
 }
+
+export async function DELETE(
+  _request: Request,
+  context: RouteContext,
+) {
+  const { campaignId } = await context.params;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json(
+      { message: "Authentication required." },
+      { status: 401 },
+    );
+  }
+
+  // TODO: When NPCs, locations, and other entities reference campaigns,
+  // ensure they are also removed or reassigned here.
+  const { error } = await supabase
+    .from("campaigns")
+    .delete()
+    .eq("id", campaignId)
+    .eq("gamemaster_id", user.id);
+
+  if (error) {
+    console.error("[campaigns] delete failed", error);
+    return NextResponse.json(
+      { message: "Unable to delete campaign." },
+      { status: 500 },
+    );
+  }
+
+  return NextResponse.json({ success: true });
+}
