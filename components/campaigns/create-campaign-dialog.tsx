@@ -3,11 +3,12 @@
 import { FormEvent, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
+import { Button, type ButtonProps } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useCampaigns } from "@/components/campaigns/campaign-context";
+import { cn } from "@/lib/utils";
 
 type CampaignFormState = {
   name: string;
@@ -21,7 +22,21 @@ const initialFormState: CampaignFormState = {
   description: "",
 };
 
-export function CreateCampaignDialog() {
+type CreateCampaignDialogProps = {
+  triggerLabel?: string;
+  triggerVariant?: ButtonProps["variant"];
+  triggerSize?: ButtonProps["size"];
+  triggerClassName?: string;
+  fullWidth?: boolean;
+};
+
+export function CreateCampaignDialog({
+  triggerLabel = "New",
+  triggerVariant = "outline",
+  triggerSize = "sm",
+  triggerClassName,
+  fullWidth = false,
+}: CreateCampaignDialogProps) {
   const router = useRouter();
   const { setActiveCampaignId } = useCampaigns();
   const [isOpen, setIsOpen] = useState(false);
@@ -191,13 +206,17 @@ export function CreateCampaignDialog() {
       <div className="relative">
         <div className="pointer-events-none absolute inset-0 rounded-full blur-md shadow-[0_0_24px_rgba(236,72,153,0.4)]" />
         <Button
-          size="sm"
-          variant="outline"
-          className="relative text-[0.625rem] uppercase tracking-[0.2em]"
+          size={triggerSize}
+          variant={triggerVariant}
+          className={cn(
+            "relative text-[0.625rem] uppercase tracking-[0.2em]",
+            fullWidth && "w-full",
+            triggerClassName,
+          )}
           onClick={() => setIsOpen(true)}
           disabled={isSubmitting}
         >
-          New
+          {triggerLabel}
         </Button>
       </div>
     </>

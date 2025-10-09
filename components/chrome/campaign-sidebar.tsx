@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ListTreeIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { CreateCampaignDialog } from "@/components/campaigns/create-campaign-dialog";
@@ -63,18 +63,26 @@ export function CampaignSidebar() {
 
   const panel = (
     <aside className="campaign-sidebar hidden h-full w-64 shrink-0 flex-col gap-4 border-r border-border/70 bg-background/40 p-4 backdrop-blur lg:flex">
-      <div className="space-y-3">
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-            Campaigns
-          </span>
-          <CreateCampaignDialog />
-        </div>
+      <div className="space-y-2">
+        <span className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+          Campaigns
+        </span>
+        <div className="h-px w-full bg-border/60" />
       </div>
 
       <nav className="flex flex-col gap-1 overflow-y-auto">
         {campaignList}
       </nav>
+
+      <div className="mt-auto pt-4">
+        <CreateCampaignDialog
+          triggerLabel="NEW CAMPAIGN"
+          triggerVariant="default"
+          triggerSize="sm"
+          fullWidth
+          triggerClassName="tracking-[0.35em]"
+        />
+      </div>
     </aside>
   );
 
@@ -82,14 +90,24 @@ export function CampaignSidebar() {
     <>
       <div className="lg:hidden">
         <aside className="campaign-sidebar mb-6 w-full rounded-2xl border border-border/70 bg-background/40 p-4 backdrop-blur">
-          <div className="flex items-center justify-between gap-2">
+          <div className="space-y-2">
             <span className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
               Campaigns
             </span>
-            <CreateCampaignDialog />
+            <div className="h-px w-full bg-border/60" />
           </div>
 
           <nav className="mt-4 flex flex-col gap-1">{campaignList}</nav>
+
+          <div className="mt-6">
+            <CreateCampaignDialog
+              triggerLabel="NEW CAMPAIGN"
+              triggerVariant="default"
+              triggerSize="sm"
+              fullWidth
+              triggerClassName="tracking-[0.35em]"
+            />
+          </div>
         </aside>
       </div>
 
@@ -111,13 +129,16 @@ export function CampaignSidebar() {
               type="button"
               size="icon"
               variant={isPanelOpen ? "default" : "outline"}
-              className="flex h-12 w-12 flex-col items-center justify-center gap-1 rounded-full text-[0.6rem] uppercase tracking-[0.28em]"
+              className="flex h-12 w-12 items-center justify-center rounded-full"
               onClick={() => setIsPanelOpen((open) => !open)}
               aria-expanded={isPanelOpen}
               aria-label="Toggle campaigns"
             >
-              <ListTreeIcon className="size-4" />
-              <span className="text-[0.55rem] tracking-[0.3em]">Runs</span>
+              {isPanelOpen ? (
+                <ChevronLeft className="size-4" />
+              ) : (
+                <ChevronRight className="size-4" />
+              )}
             </Button>
           </div>
           <span className="text-[0.55rem] uppercase tracking-[0.35em] text-muted-foreground/70 [writing-mode:vertical-rl]">

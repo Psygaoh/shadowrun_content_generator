@@ -25,9 +25,6 @@ export default async function CampaignDetailPage({
   return (
     <section className="space-y-12">
       <div className="space-y-5">
-        <span className="callout-label text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">
-          Campaign Control
-        </span>
         <h1 className={`campaign-title text-4xl md:text-5xl ${majorMono.className}`}>
           {campaign.name}
         </h1>

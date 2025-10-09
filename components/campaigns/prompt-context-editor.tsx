@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { useCampaigns } from "@/components/campaigns/campaign-context";
 
 type PromptContextEditorProps = {
   campaignId: string;
@@ -15,6 +16,7 @@ export function PromptContextEditor({
   initialValue,
 }: PromptContextEditorProps) {
   const router = useRouter();
+  const { updateCampaign } = useCampaigns();
   const [value, setValue] = useState(initialValue);
   const [isSaving, setIsSaving] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -53,6 +55,11 @@ export function PromptContextEditor({
         return;
       }
 
+      updateCampaign(campaignId, {
+        promptContext: trimmed,
+        updatedAt: new Date().toISOString(),
+      });
+
       setFeedback("Context updated.");
       router.refresh();
     } catch (error) {
@@ -69,7 +76,7 @@ export function PromptContextEditor({
         htmlFor="prompt-context"
         className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground"
       >
-        Prompt Context
+        Campaign context prompt
       </label>
       <textarea
         id="prompt-context"
