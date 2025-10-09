@@ -70,7 +70,7 @@ export function CampaignSidebar() {
         <div className="h-px w-full bg-border/60" />
       </div>
 
-      <nav className="flex flex-col gap-1 overflow-y-auto">
+      <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
         {campaignList}
       </nav>
 
@@ -97,7 +97,9 @@ export function CampaignSidebar() {
             <div className="h-px w-full bg-border/60" />
           </div>
 
-          <nav className="mt-4 flex flex-col gap-1">{campaignList}</nav>
+          <nav className="mt-4 flex min-h-0 flex-1 flex-col gap-1">
+            {campaignList}
+          </nav>
 
           <div className="mt-6">
             <CreateCampaignDialog

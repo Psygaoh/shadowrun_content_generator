@@ -13,32 +13,41 @@ type ModalProps = {
 };
 
 export function Modal({ open, onOpenChange, children, className }: ModalProps) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const portalRef = useRef<HTMLDivElement | null>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
+  const onOpenChangeRef = useRef(onOpenChange);
 
   useEffect(() => {
-    if (!open) {
+    onOpenChangeRef.current = onOpenChange;
+  }, [onOpenChange]);
+
+  if (typeof document !== "undefined" && !portalRef.current) {
+    const container = document.createElement("div");
+    container.className = "modal-root";
+    portalRef.current = container;
+  }
+
+  useEffect(() => {
+    const portal = portalRef.current;
+    if (!open || !portal) {
       return;
     }
 
-    const container = document.createElement("div");
-    container.className = "modal-root";
-    containerRef.current = container;
-    document.body.appendChild(container);
+    document.body.appendChild(portal);
+    previousActiveElement.current = document.activeElement as HTMLElement | null;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        onOpenChange(false);
+        onOpenChangeRef.current(false);
       }
     };
 
-    previousActiveElement.current = document.activeElement as HTMLElement | null;
     document.addEventListener("keydown", handleKeyDown);
 
     requestAnimationFrame(() => {
       const focusTarget =
-        container.querySelector<HTMLElement>("[data-autofocus='true']") ??
-        container.querySelector<HTMLElement>(
+        portal.querySelector<HTMLElement>("[data-autofocus='true']") ??
+        portal.querySelector<HTMLElement>(
           "button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])",
         );
       focusTarget?.focus();
@@ -46,15 +55,13 @@ export function Modal({ open, onOpenChange, children, className }: ModalProps) {
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      container.remove();
+      portal.remove();
       const previous = previousActiveElement.current;
       previous?.focus();
     };
-  }, [open, onOpenChange]);
+  }, [open]);
 
-  const portalNode = containerRef.current;
-
-  if (!open || !portalNode) {
+  if (!open || !portalRef.current) {
     return null;
   }
 
@@ -63,7 +70,7 @@ export function Modal({ open, onOpenChange, children, className }: ModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-background/70 p-4 backdrop-blur-sm"
       onClick={(event) => {
         if (event.target === event.currentTarget) {
-          onOpenChange(false);
+          onOpenChangeRef.current(false);
         }
       }}
     >
@@ -78,7 +85,7 @@ export function Modal({ open, onOpenChange, children, className }: ModalProps) {
         {children}
       </div>
     </div>,
-    portalNode,
+    portalRef.current,
   );
 }
 

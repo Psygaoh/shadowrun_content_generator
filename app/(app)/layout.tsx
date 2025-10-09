@@ -55,7 +55,7 @@ export default async function AppLayout({
       <AppNavigation />
 
       <CampaignsProvider campaigns={campaigns}>
-        <main className="flex w-full flex-1 flex-col gap-6 px-6 py-10 md:px-10 lg:flex-row lg:gap-10">
+        <main className="flex w-full flex-1 flex-col gap-6 px-6 py-10 md:px-10 lg:flex-row lg:items-stretch lg:gap-10">
           <CampaignSidebar />
           <div className="flex-1 min-w-0">
             {children}
