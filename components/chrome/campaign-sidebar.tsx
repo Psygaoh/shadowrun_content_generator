@@ -1,90 +1,33 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ListTreeIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import type { Campaign } from "@/lib/campaigns";
 import { CreateCampaignDialog } from "@/components/campaigns/create-campaign-dialog";
 import { Button } from "@/components/ui/button";
-import { ACTIVE_CAMPAIGN_STORAGE_KEY } from "@/components/campaigns/campaign-notes-drawer";
+import { useCampaigns } from "@/components/campaigns/campaign-context";
 
-type CampaignSidebarProps = {
-  campaigns: Campaign[];
-};
-
-export function CampaignSidebar({ campaigns }: CampaignSidebarProps) {
+export function CampaignSidebar() {
   const pathname = usePathname();
+  const { campaigns, activeCampaignId, setActiveCampaignId } =
+    useCampaigns();
   const [isPanelOpen, setIsPanelOpen] = useState(true);
-  const [activeCampaignId, setActiveCampaignId] =
-    useState<string | null>(null);
 
   const isHomePage = pathname === "/home";
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const stored = window.localStorage.getItem(
-      ACTIVE_CAMPAIGN_STORAGE_KEY,
-    );
-    if (stored) {
-      setActiveCampaignId(stored);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!campaigns.length) {
-      return;
-    }
-    if (!activeCampaignId) {
-      const nextCampaignId = campaigns[0]?.id ?? null;
-      if (nextCampaignId && typeof window !== "undefined") {
-        window.localStorage.setItem(
-          ACTIVE_CAMPAIGN_STORAGE_KEY,
-          nextCampaignId,
-        );
-      }
-      setActiveCampaignId(nextCampaignId);
-    } else {
-      const exists = campaigns.some(
-        (campaign) => campaign.id === activeCampaignId,
-      );
-      if (!exists) {
-        const fallbackId = campaigns[0]?.id ?? null;
-        setActiveCampaignId(fallbackId);
-        if (fallbackId && typeof window !== "undefined") {
-          window.localStorage.setItem(
-            ACTIVE_CAMPAIGN_STORAGE_KEY,
-            fallbackId,
-          );
-        }
-      }
-    }
-  }, [campaigns, activeCampaignId]);
 
   const campaignLinks = useMemo(() => {
     return campaigns.map((campaign) => {
       const href = `/campaigns/${campaign.id}`;
-      const isActive =
-        pathname === href || pathname.startsWith(`${href}/`);
+      const isActive = campaign.id === activeCampaignId;
 
       return (
         <Link
           key={campaign.id}
           href={href}
-          onClick={() => {
-            if (typeof window !== "undefined") {
-              window.localStorage.setItem(
-                ACTIVE_CAMPAIGN_STORAGE_KEY,
-                campaign.id,
-              );
-            }
-            setActiveCampaignId(campaign.id);
-          }}
+          onClick={() => setActiveCampaignId(campaign.id)}
           className={cn(
             "rounded-lg border px-3 py-2 text-sm transition-colors",
             isActive
@@ -103,11 +46,20 @@ export function CampaignSidebar({ campaigns }: CampaignSidebarProps) {
         </Link>
       );
     });
-  }, [campaigns, pathname]);
+  }, [campaigns, activeCampaignId, setActiveCampaignId]);
 
   if (isHomePage) {
     return null;
   }
+
+  const campaignList =
+    campaignLinks.length > 0 ? (
+      campaignLinks
+    ) : (
+      <div className="rounded-lg border border-dashed px-3 py-6 text-xs text-muted-foreground">
+        No campaigns yet. Create your first run to start managing context.
+      </div>
+    );
 
   const panel = (
     <aside className="campaign-sidebar hidden h-full w-64 shrink-0 flex-col gap-4 border-r border-border/70 bg-background/40 p-4 backdrop-blur lg:flex">
@@ -121,14 +73,7 @@ export function CampaignSidebar({ campaigns }: CampaignSidebarProps) {
       </div>
 
       <nav className="flex flex-col gap-1 overflow-y-auto">
-        {campaignLinks.length ? (
-          campaignLinks
-        ) : (
-          <div className="rounded-lg border border-dashed px-3 py-6 text-xs text-muted-foreground">
-            No campaigns yet. Create your first run to start managing
-            context.
-          </div>
-        )}
+        {campaignList}
       </nav>
     </aside>
   );
@@ -144,16 +89,7 @@ export function CampaignSidebar({ campaigns }: CampaignSidebarProps) {
             <CreateCampaignDialog />
           </div>
 
-          <nav className="mt-4 flex flex-col gap-1">
-            {campaignLinks.length ? (
-              campaignLinks
-            ) : (
-              <div className="rounded-lg border border-dashed px-3 py-6 text-xs text-muted-foreground">
-                No campaigns yet. Create your first run to start managing
-                context.
-              </div>
-            )}
-          </nav>
+          <nav className="mt-4 flex flex-col gap-1">{campaignList}</nav>
         </aside>
       </div>
 
@@ -185,7 +121,7 @@ export function CampaignSidebar({ campaigns }: CampaignSidebarProps) {
             </Button>
           </div>
           <span className="text-[0.55rem] uppercase tracking-[0.35em] text-muted-foreground/70 [writing-mode:vertical-rl]">
-            Campaigns settings
+            Campaigns
           </span>
         </aside>
       </div>

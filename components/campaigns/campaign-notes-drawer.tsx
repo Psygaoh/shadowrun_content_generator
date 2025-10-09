@@ -1,99 +1,47 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import {
+  FormEvent,
+  useEffect,
+  useMemo,
+  useState,
+  useTransition,
+} from "react";
 import { FileTextIcon, XIcon } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
-import type { Campaign } from "@/lib/campaigns";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { useCampaigns } from "@/components/campaigns/campaign-context";
 
-export const ACTIVE_CAMPAIGN_STORAGE_KEY = "shadowrun.activeCampaignId";
-
-type CampaignNotesDrawerProps = {
-  campaigns: Campaign[];
-};
-
-function extractCampaignId(pathname: string): string | null {
-  const match = pathname.match(/^\/campaigns\/([^/]+)/);
-  return match ? match[1] : null;
-}
-
-export function CampaignNotesDrawer({
-  campaigns,
-}: CampaignNotesDrawerProps) {
+export function CampaignNotesDrawer() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { campaigns, activeCampaignId, saveCampaignNotes } = useCampaigns();
+
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const [activeCampaignId, setActiveCampaignId] = useState<string | null>(
-    null,
-  );
+  const [noteValue, setNoteValue] = useState("");
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [, startTransition] = useTransition();
 
   const isHome = pathname === "/home";
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const routeCampaignId = extractCampaignId(pathname);
-
-    if (routeCampaignId) {
-      window.localStorage.setItem(
-        ACTIVE_CAMPAIGN_STORAGE_KEY,
-        routeCampaignId,
-      );
-      setActiveCampaignId(routeCampaignId);
-      return;
-    }
-
-    const stored = window.localStorage.getItem(
-      ACTIVE_CAMPAIGN_STORAGE_KEY,
-    );
-    if (stored) {
-      setActiveCampaignId(stored);
-    }
-  }, [pathname]);
-
-  useEffect(() => {
-    if (!campaigns.length) {
-      return;
-    }
-
-    if (!activeCampaignId) {
-      const nextCampaignId = campaigns[0]?.id ?? null;
-      if (nextCampaignId && typeof window !== "undefined") {
-        window.localStorage.setItem(
-          ACTIVE_CAMPAIGN_STORAGE_KEY,
-          nextCampaignId,
-        );
-      }
-      setActiveCampaignId(nextCampaignId);
-      return;
-    }
-
-    const exists = campaigns.some(
-      (campaign) => campaign.id === activeCampaignId,
-    );
-
-    if (!exists) {
-      const fallbackId = campaigns[0]?.id ?? null;
-      setActiveCampaignId(fallbackId);
-      if (fallbackId && typeof window !== "undefined") {
-        window.localStorage.setItem(
-          ACTIVE_CAMPAIGN_STORAGE_KEY,
-          fallbackId,
-        );
-      }
-    }
-  }, [campaigns, activeCampaignId]);
 
   const activeCampaign = useMemo(() => {
     if (!activeCampaignId) {
       return null;
     }
-    return campaigns.find(
-      (campaign) => campaign.id === activeCampaignId,
-    );
+    return campaigns.find((campaign) => campaign.id === activeCampaignId);
   }, [campaigns, activeCampaignId]);
+
+  useEffect(() => {
+    if (!activeCampaign) {
+      setNoteValue("");
+      return;
+    }
+    setNoteValue(activeCampaign.description ?? "");
+  }, [activeCampaign]);
 
   useEffect(() => {
     if (!isPanelOpen) {
@@ -119,6 +67,29 @@ export function CampaignNotesDrawer({
       return;
     }
     setIsPanelOpen((open) => !open);
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!activeCampaign) {
+      return;
+    }
+
+    setIsSaving(true);
+    setFeedback(null);
+    setError(null);
+
+    const trimmed = noteValue.trim();
+    const result = await saveCampaignNotes(activeCampaign.id, trimmed);
+
+    if (!result.ok) {
+      setError(result.message);
+    } else {
+      setFeedback("Notes saved");
+      startTransition(() => router.refresh());
+    }
+
+    setIsSaving(false);
   };
 
   return (
@@ -177,16 +148,29 @@ export function CampaignNotesDrawer({
             <div className="mt-6 h-px bg-border/60" />
 
             <section className="mt-6 flex-1 overflow-y-auto pr-2">
-              {activeCampaign.description ? (
-                <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-                  {activeCampaign.description}
-                </p>
-              ) : (
-                <p className="text-sm italic text-muted-foreground/80">
-                  No notes yet. Capture factions, plot threads, and table
-                  beats here to keep everything at your fingertips.
-                </p>
-              )}
+              <form
+                className="flex h-full flex-col gap-4"
+                onSubmit={handleSubmit}
+              >
+                <Textarea
+                  value={noteValue}
+                  onChange={(event) => setNoteValue(event.target.value)}
+                  className="min-h-[240px] flex-1 resize-none rounded-lg border border-border/70 bg-background/80 px-4 py-3 text-sm text-foreground shadow-inner outline-none transition focus-visible:ring-1 focus-visible:ring-primary"
+                  placeholder="Capture factions, agendas, twists, and table beats for this campaign."
+                />
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-h-[1.25rem] text-xs">
+                    {error ? (
+                      <span className="text-destructive">{error}</span>
+                    ) : feedback ? (
+                      <span className="text-muted-foreground">{feedback}</span>
+                    ) : null}
+                  </div>
+                  <Button type="submit" size="sm" disabled={isSaving}>
+                    {isSaving ? "Saving..." : "Save notes"}
+                  </Button>
+                </div>
+              </form>
             </section>
           </aside>
         </div>

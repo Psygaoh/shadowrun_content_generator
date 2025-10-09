@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ACTIVE_CAMPAIGN_STORAGE_KEY } from "./campaign-notes-drawer";
+import { Textarea } from "@/components/ui/textarea";
+import { useCampaigns } from "@/components/campaigns/campaign-context";
 
 type CampaignFormState = {
   name: string;
@@ -22,6 +23,7 @@ const initialFormState: CampaignFormState = {
 
 export function CreateCampaignDialog() {
   const router = useRouter();
+  const { setActiveCampaignId } = useCampaigns();
   const [isOpen, setIsOpen] = useState(false);
   const [formState, setFormState] =
     useState<CampaignFormState>(initialFormState);
@@ -79,15 +81,9 @@ export function CreateCampaignDialog() {
           ? result.campaignId
           : null;
 
-      if (newCampaignId && typeof window !== "undefined") {
-        window.localStorage.setItem(
-          ACTIVE_CAMPAIGN_STORAGE_KEY,
-          newCampaignId,
-        );
-      }
-
       closeDialog();
       if (newCampaignId) {
+        setActiveCampaignId(newCampaignId);
         router.push(`/campaigns/${newCampaignId}`);
       }
       startTransition(() => {
@@ -156,7 +152,7 @@ export function CreateCampaignDialog() {
 
               <div className="space-y-2">
                 <Label htmlFor="campaign-description">Description</Label>
-                <textarea
+                <Textarea
                   id="campaign-description"
                   value={formState.description}
                   onChange={(event) =>
