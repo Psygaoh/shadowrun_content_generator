@@ -1,11 +1,16 @@
 import { redirect } from "next/navigation";
 
-import { LogoutButton } from "@/components/logout-button";
 import { PageHeader } from "@/components/chrome/page-header";
 import { PageFooter } from "@/components/chrome/page-footer";
 import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { NeonBackdrop } from "@/components/chrome/neon-backdrop";
 import { createClient } from "@/lib/supabase/server";
+import { LogoutButton } from "@/components/logout-button";
+import { AppNavigation } from "@/components/chrome/app-navigation";
+import { CampaignSidebar } from "@/components/chrome/campaign-sidebar";
+import { listCampaigns, type Campaign } from "@/lib/campaigns";
+import { CampaignNotesDrawer } from "@/components/campaigns/campaign-notes-drawer";
+import { CampaignsProvider } from "@/components/campaigns/campaign-context";
 
 export default async function AppLayout({
   children,
@@ -21,6 +26,14 @@ export default async function AppLayout({
 
   if (error || !user) {
     redirect("/auth/login");
+  }
+
+  let campaigns: Campaign[] = [];
+
+  try {
+    campaigns = await listCampaigns(supabase);
+  } catch (campaignLoadError) {
+    console.error(campaignLoadError);
   }
 
   return (
@@ -39,9 +52,17 @@ export default async function AppLayout({
         }
       />
 
-      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-6 py-12 md:px-12">
-        {children}
-      </main>
+      <AppNavigation />
+
+      <CampaignsProvider campaigns={campaigns}>
+        <main className="flex w-full flex-1 flex-col gap-6 px-6 py-10 md:px-10 lg:flex-row lg:items-stretch lg:gap-10">
+          <CampaignSidebar />
+          <div className="flex-1 min-w-0">
+            {children}
+          </div>
+          <CampaignNotesDrawer />
+        </main>
+      </CampaignsProvider>
 
       <PageFooter variant="app" />
     </NeonBackdrop>
